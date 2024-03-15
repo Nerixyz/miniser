@@ -8,7 +8,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - uses: DoozyX/clang-format-lint-action@v0.9
+      - uses: DoozyX/clang-format-lint-action@v0.17
         with:
           source: "include test examples"
           extensions: "hpp,cpp"
