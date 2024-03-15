@@ -1,0 +1,16 @@
+name: Format
+
+on: [push, pull_request]
+
+jobs:
+  check-formatting:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DoozyX/clang-format-lint-action@v0.17
+        with:
+          source: "include tests examples"
+          extensions: "hpp,cpp"
+          clangFormatVersion: 17
+          inplace: false
