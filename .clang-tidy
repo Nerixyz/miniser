@@ -1,0 +1,30 @@
+Checks: "-*,
+  clang-diagnostic-*,
+  llvm-*,
+  misc-*,
+  -misc-unused-parameters,
+  readability-identifier-naming,
+  -llvm-header-guard,
+  -llvm-include-order,
+  modernize-*,
+  readability-*,
+  performance-*,
+  misc-*,
+  bugprone-*,
+  cert-*,
+  cppcoreguidelines-*,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers,
+  -readability-identifier-length,
+  -readability-named-parameter,
+  -readability-function-cognitive-complexity,
+  -bugprone-easily-swappable-parameters,
+  -misc-non-private-member-variables-in-classes,
+  "
+CheckOptions:
+  - key: readability-implicit-bool-conversion.AllowPointerConditions
+    value: true
+
+  - key: misc-const-correctness.AnalyzeValues
+    value: false

@@ -1,0 +1,15 @@
+name: Format
+
+on: [push, pull_request]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DoozyX/clang-format-lint-action@v0.9
+        with:
+          source: "include test examples"
+          extensions: "hpp,cpp"
+          clangFormatVersion: 17

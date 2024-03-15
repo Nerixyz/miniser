@@ -1,0 +1,111 @@
+name: test
+on: [push, pull_request]
+
+# stop in-progress builds on push
+concurrency:
+  group: test-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: "${{matrix.os}} ${{matrix.compiler}} ${{matrix.build_type}}"
+    runs-on: ${{matrix.os}}
+    defaults:
+      run:
+        shell: bash
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        build_type: [Debug]
+        compiler: [default, clang]
+        include:
+          - os: windows-latest
+            build_type: Debug
+            compiler: clang-cl
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # ╭───────────────╮
+      # │ install conan │
+      # ╰───────────────╯
+
+      - name: Install conan (macOS)
+        if: startsWith(matrix.os, 'macos')
+        run: brew install conan
+
+      - name: Install conan (Windows)
+        if: startsWith(matrix.os, 'windows')
+        run: choco install conan
+
+      - name: Install conan (Ubuntu)
+        if: startsWith(matrix.os, 'ubuntu')
+        run: |
+          pip3 install conan
+          echo "/home/runner/.local/bin" >> $GITHUB_PATH
+
+      # ╭───────────────╮
+      # │ create build/ │
+      # ╰───────────────╯
+
+      - name: Create build directory
+        run: mkdir build
+
+      # ╭────────────────╮
+      # │ setup compiler │
+      # ╰────────────────╯
+
+      - name: Install Clang
+        if: matrix.compiler == 'clang'
+        uses: KyleMayes/install-llvm-action@v1
+        with:
+          version: 17
+
+      - name: Use Clang
+        if: matrix.compiler == 'clang'
+        run: |
+          echo "CC=clang" >> $GITHUB_ENV
+          echo "CXX=clang++" >> $GITHUB_ENV
+
+      # ╭──────────────────╮
+      # │ install packages │
+      # ╰──────────────────╯
+
+      - name: Install packages
+        working-directory: build
+        run: |
+          conan install .. \
+            --output-folder=. \
+            -b missing \
+            -s build_type=${{matrix.build_type}}
+
+      # ╭─────────────────╮
+      # │ configure CMake │
+      # ╰─────────────────╯
+
+      - name: Configure (Windows)
+        if: startsWith(matrix.os, 'windows')
+        working-directory: build
+        run: |
+          cmake ${{matrix.compiler == 'clang-cl' && '-T ClangCL' || ''}} -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake ..
+
+      # ╭───────╮
+      # │ build │
+      # ╰───────╯
+
+      - name: Build
+        working-directory: build
+        run: |
+          cmake --build .
+
+      # ╭──────╮
+      # │ test │
+      # ╰──────╯
+
+      - name: Run tests
+        working-directory: build
+        run: ctest -V
+        env:
+          CTEST_OUTPUT_ON_FAILURE: True

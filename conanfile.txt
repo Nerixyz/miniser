@@ -1,0 +1,11 @@
+[requires]
+boost/1.84.0
+yyjson/0.8.0
+gtest/1.14.0
+
+[generators]
+CMakeDeps
+CMakeToolchain
+
+[options]
+boost*:header_only=True
