@@ -1,7 +1,7 @@
 #pragma once
 
-#include "deser.hpp"
-#include "ser.hpp"
+#include <miniser/deser.hpp>
+#include <miniser/ser.hpp>
 
 #include <string_view>
 
@@ -17,12 +17,16 @@ public:
       cleanup(this->doc_);
     }
   }
-  managed_yydoc(managed_yydoc &&other) : doc_(other.doc_) {
+  managed_yydoc(managed_yydoc &&other) noexcept : doc_(other.doc_) {
     other.doc_ = nullptr;
   }
   managed_yydoc(const managed_yydoc &) = delete;
 
-  managed_yydoc &operator=(managed_yydoc &&other) {
+  managed_yydoc &operator=(managed_yydoc &&other) noexcept {
+    if (this->doc_) {
+      cleanup(this->doc_);
+    }
+
     this->doc_ = other.doc_;
     other.doc_ = nullptr;
     return *this;
@@ -48,6 +52,7 @@ public:
   borrowed(borrowed &&) = default;
   borrowed &operator=(borrowed &&) = default;
   borrowed &operator=(const borrowed &) = delete;
+  ~borrowed() = default;
 
   const T &operator*() const noexcept { return this->value_; }
   const T *operator->() const noexcept { return &this->value_; }
@@ -92,19 +97,37 @@ public:
   serialized(char *str, size_t len) : str_(str), len_(len) {}
   ~serialized() {
     if (this->str_) {
+      // NOLINTNEXTLINE(cppcoreguidelines-no-malloc)
       free(this->str_);
     }
   }
-  serialized(serialized &&other) : str_(other.str_), len_(other.len_) {
+  serialized(serialized &&other) noexcept : str_(other.str_), len_(other.len_) {
     other.str_ = nullptr;
     other.len_ = 0;
   }
+  serialized(const serialized &) = delete;
 
-  std::string_view view() const {
-    return std::string_view(this->str_, this->len_);
+  serialized &operator=(serialized &&other) noexcept {
+    if (this->str_) {
+      // NOLINTNEXTLINE(cppcoreguidelines-no-malloc)
+      free(this->str_);
+    }
+
+    this->str_ = other.str_;
+    this->len_ = other.len_;
+    other.str_ = nullptr;
+    other.len_ = 0;
+    return *this;
+  }
+  serialized &operator=(const serialized &) = delete;
+
+  [[nodiscard]] std::string_view view() const {
+    return {this->str_, this->len_};
   }
 
-  std::string to_string() const { return std::string(this->str_, this->len_); }
+  [[nodiscard]] std::string to_string() const {
+    return {this->str_, this->len_};
+  }
 
 private:
   char *str_ = nullptr;

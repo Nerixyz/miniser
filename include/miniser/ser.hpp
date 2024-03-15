@@ -1,6 +1,7 @@
 #pragma once
 
 #include <boost/pfr.hpp>
+#include <miniser/detail/names.hpp>
 #include <optional>
 #include <string_view>
 #include <type_traits>
@@ -79,7 +80,7 @@ yyjson_mut_val *serialize(const T &value, yyjson_mut_doc *doc) {
   }
 
   boost::pfr::for_each_field(value, [&](const auto &field, auto index) {
-    auto key = boost::pfr::get_name<index, T>();
+    auto key = miniser::detail::name_of_field<index, T>;
     auto *kv = yyjson_mut_strn(doc, key.data(), key.size());
     if (!kv) {
       return;

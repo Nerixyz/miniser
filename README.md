@@ -53,10 +53,22 @@ This will print:
 bar
 ```
 
+Fields can be renamed by setting `miniser::rename_fields<T>` to the appropriate strategy:
+
+```c++
+struct Camel {
+  int my_int;
+  int my_second_int;
+};
+
+namespace miniser {
+template <> inline constexpr rename rename_fields<Camel> = rename::camel_case;
+} // namespace miniser
+```
+
 ## Limitations
 
 The limitations of [Boost.PFR][Boost.PFR-lim] apply (only simple aggregates are supported).
-Furthermore, renaming isn't supported.
 
 [Boost.PFR]: www.boost.org/doc/libs/master/doc/html/boost_pfr.html
 [Boost.PFR-lim]: https://www.boost.org/doc/libs/master/doc/html/boost_pfr/limitations_and_configuration.html

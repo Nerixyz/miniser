@@ -1,26 +1,10 @@
-#include "miniser/miniser.hpp"
+#include "equality.hpp"
 #include <gtest/gtest.h>
 
 constexpr auto check_range = miniser::deser::option::check_range;
 constexpr auto strict_real = miniser::deser::option::strict_real;
 
-template <typename T>
-void check_eq(std::string_view in, std::optional<T> expected,
-              miniser::deser::option opts = miniser::deser::option::none) {
-  EXPECT_EQ(miniser::deserialize<T>(in, {opts}), expected) << in;
-}
-
-template <typename T>
-void check_borrowed_eq(
-    std::string_view in, std::optional<T> expected,
-    miniser::deser::option opts = miniser::deser::option::none) {
-  auto des = miniser::deserialize_borrowed<T>(in, {opts});
-  if (expected) {
-    EXPECT_EQ(**des, expected) << in;
-  } else {
-    EXPECT_EQ(des.has_value(), expected.has_value()) << in;
-  }
-}
+using namespace test_deser;
 
 template <typename T>
 void signed_check(std::string_view over, std::string_view under) {

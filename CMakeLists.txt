@@ -23,6 +23,7 @@ if(MINISER_ENABLE_TESTS)
 
     add_executable(${PROJECT_NAME}-test
         tests/ser.cpp
+        tests/rename.cpp
         tests/deser.cpp
     )
     target_link_libraries(${PROJECT_NAME}-test PRIVATE ${PROJECT_NAME} GTest::gtest_main)

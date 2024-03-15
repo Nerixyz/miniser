@@ -2,6 +2,7 @@
 
 #include <boost/pfr.hpp>
 #include <limits>
+#include <miniser/detail/names.hpp>
 #include <optional>
 #include <string_view>
 #include <type_traits>
@@ -106,7 +107,7 @@ std::optional<T> deserialize(std::type_identity<T>, yyjson_val *value,
     if (!ok) {
       return;
     }
-    auto key = boost::pfr::get_name<index, T>();
+    auto key = miniser::detail::name_of_field<index, T>;
     auto *inner = yyjson_obj_getn(value, key.data(), key.size());
     auto xd = deserialize(
         std::type_identity<std::remove_reference_t<decltype(field)>>{}, inner,

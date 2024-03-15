@@ -27,9 +27,11 @@ int main() {
   };
 
   std::optional<miniser::serialized> serialized = miniser::serialize(bar);
+  // {"name":"bar","foo":[{"i":42,"b":true},{"i":0,"b":null}]}
   std::cout << serialized->view() << '\n';
 
   std::optional<Bar> deserialized =
       miniser::deserialize<Bar>(serialized->view());
+  // bar
   std::cout << deserialized->name << '\n';
 }

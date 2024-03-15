@@ -1,12 +1,7 @@
-#include "miniser/miniser.hpp"
+#include "equality.hpp"
 #include <gtest/gtest.h>
 
-template <typename T> void check_eq(T in, std::string_view expected) {
-  auto serialized = miniser::serialize<T>(in);
-  EXPECT_TRUE(serialized.has_value()) << expected;
-  EXPECT_EQ(serialized->view(), expected) << expected;
-  EXPECT_EQ(serialized->view(), serialized->to_string()) << expected;
-}
+using namespace test_ser;
 
 template <typename T> void signed_check() {
   auto max = std::numeric_limits<T>::max();

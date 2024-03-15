@@ -21,6 +21,7 @@ Checks: "-*,
   -readability-function-cognitive-complexity,
   -bugprone-easily-swappable-parameters,
   -misc-non-private-member-variables-in-classes,
+  -cppcoreguidelines-owning-memory,
   "
 CheckOptions:
   - key: readability-implicit-bool-conversion.AllowPointerConditions

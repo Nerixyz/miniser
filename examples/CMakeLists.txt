@@ -7,3 +7,4 @@ function(add_example name)
 endfunction()
 
 add_example(basic)
+add_example(rename)
