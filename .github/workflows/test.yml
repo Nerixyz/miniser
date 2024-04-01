@@ -61,7 +61,7 @@ jobs:
 
       - name: Install Clang
         if: startsWith(matrix.compiler, 'clang')
-        uses: KyleMayes/install-llvm-action@v1
+        uses: KyleMayes/install-llvm-action@v2
         with:
           version: 17
 
