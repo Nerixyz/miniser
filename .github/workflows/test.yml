@@ -26,7 +26,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       # ╭──────────────────────╮
       # │ install dependencies │
@@ -61,9 +61,9 @@ jobs:
 
       - name: Install Clang
         if: startsWith(matrix.compiler, 'clang')
-        uses: KyleMayes/install-llvm-action@v2
+        uses: KyleMayes/install-llvm-action@v2.0.8
         with:
-          version: 17
+          version: 21
 
       - name: Set VS Env (Windows)
         if: startsWith(matrix.os, 'windows')
