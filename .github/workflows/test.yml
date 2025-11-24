@@ -63,7 +63,7 @@ jobs:
         if: startsWith(matrix.compiler, 'clang')
         uses: KyleMayes/install-llvm-action@v2
         with:
-          version: 17
+          version: 21
 
       - name: Set VS Env (Windows)
         if: startsWith(matrix.os, 'windows')
